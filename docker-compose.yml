@@ -1,0 +1,10 @@
+services:
+  manticore:
+    image: manticoresearch/manticore:latest
+    container_name: manticore
+    ports:
+      - "9306:9306"
+    volumes:
+      - ./manticore/manticore.conf:/etc/manticoresearch/manticore.conf
+      - ./manticore/idx:/var/lib/manticore
+      - ./datasets:/datasets
