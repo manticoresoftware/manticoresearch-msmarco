@@ -62,11 +62,25 @@ This project implements a document ranking system using Manticore Search on the 
    git clone https://github.com/microsoft/MSMARCO-Document-Ranking
    ```
 
-9. **Evaluate the Results**
+9. **Add symlink**. Unfortunately, the ranker has a hardcoded reference to the file path. To work around this limitation, we will create a symlink pointing to the expected location.  
    ```shell
-   python MSMARCO-Document-Ranking/ms_marco_eval.py manticore_default_run.tsv
+   ln -s ../datasets/msmarco-docdev-qrels.tsv MSMARCO-Document-Ranking/docleaderboard-qrels.tsv
+   ```
+
+10. **Evaluate the Results**
+   ```shell
+   cd MSMARCO-Document-Ranking;python ms_marco_eval.py ../manticore_default_run.tsv
    ```
    The script outputs ranking metrics (e.g., MRR) to the console.
+   ```
+   398 excluded qids loaded
+   Quantity of Documents ranked for each query is as expected. Evaluating
+   #####################
+   MRR @100: 0.14377741404026806
+   QueriesRanked: 5106
+   #####################
+   ```
+
 
 ## Notes
 
