@@ -1,6 +1,9 @@
 import mysql.connector
 import pandas as pd
 from tqdm import tqdm
+import argparse
+import os
+from dotenv import load_dotenv
 
 def escape_query(text):
     """Escape characters for Manticore MATCH() syntax."""
@@ -10,11 +13,19 @@ def escape_query(text):
     text = text.replace("'", "\\'").replace('"', '\\"').replace('(', '\\(').replace(')', '\\)').replace('/', '\\/')
     return text
 
+# Load environment variables
+load_dotenv()
+
+# Parse command-line arguments
+parser = argparse.ArgumentParser(description="Rank documents using Manticore search")
+parser.add_argument('--output', default='manticore_default_run.tsv', help='Output file name for ranking results')
+args = parser.parse_args()
+
 # Connect to Manticore
 conn = mysql.connector.connect(
-    host="127.0.0.1",
-    port=9306,
-    user="",  # Update if needed
+    host=os.getenv("MANTICORE_HOST", "127.0.0.1"),
+    port=int(os.getenv("MANTICORE_PORT", "9306")),
+    user="",
     password=""
 )
 cur = conn.cursor()
@@ -55,9 +66,9 @@ for _, row in tqdm(dev_queries.iterrows(), total=len(dev_queries), desc="Ranking
         continue
 
 # Save results
-with open("wordforms_run.tsv", "w") as f:
+with open(args.output, "w") as f:
     for qid, docid, rank in results:
         f.write(f"{qid}\t{docid}\t{rank}\n")
 
 conn.close()
-print("Wordforms ranking completed: wordforms_run.tsv generated")
+print(f"Ranking completed: {args.output} generated")

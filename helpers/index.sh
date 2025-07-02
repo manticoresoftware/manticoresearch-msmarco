@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 # Change to the directory containing docker-compose.yml
-cd /Users/djklim87/Documents/work/msmarko || {
+cd .. || {
     echo "Failed to change directory"
     exit 1
 }
