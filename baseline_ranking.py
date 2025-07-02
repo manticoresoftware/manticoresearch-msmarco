@@ -51,7 +51,7 @@ for _, row in tqdm(dev_queries.iterrows(), total=len(dev_queries), desc="Ranking
         cur.execute(
             r"""
             SELECT docid, WEIGHT() AS score
-            FROM msmarco_docs
+            FROM msmarco_docs_dist
             WHERE MATCH(%s)
             ORDER BY score DESC
             LIMIT 10

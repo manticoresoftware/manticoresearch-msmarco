@@ -14,11 +14,11 @@ MAX_PARALLEL=10
 
 # Ensure data directory exists and has correct permissions
 echo "Initializing data directory..."
-docker exec manticore bash -c "mkdir -p /var/lib/manticore/data && chown manticore:manticore /var/lib/manticore/data && chmod 755 /var/lib/manticore/data"
+docker compose exec manticore bash -c "mkdir -p /var/lib/manticore/data && chown manticore:manticore /var/lib/manticore/data && chmod 755 /var/lib/manticore/data"
 
 # Run indexer for all shards with retry logic
 echo "Starting indexing for $proc shards..."
-docker exec -e proc=$proc -e MAX_PARALLEL=$MAX_PARALLEL manticore bash -c '
+docker compose exec -e proc=$proc -e MAX_PARALLEL=$MAX_PARALLEL manticore bash -c '
 failed_shards=""
 for attempt in 1 2 3 4 5; do
     current_failed=""
@@ -50,7 +50,9 @@ fi
 
 # Check for errors in logs
 echo "Checking for indexing errors..."
-docker exec manticore bash -c 'grep -i "ERROR" /tmp/msmarco_docs_*.log || echo "No errors found in logs"'
+docker compose exec manticore bash -c 'grep -i "ERROR" /tmp/msmarco_docs_*.log || echo "No errors found in logs"'
+
+docker compose exec manticore indexer msmarco_queries
 
 # Restart Manticore service
 echo "Restarting Manticore service..."
